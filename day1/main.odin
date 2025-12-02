@@ -35,10 +35,10 @@ turn_dial_from_instructions :: proc(dial: ^Dial, filepath: string) {
         amount := value
 
         if l_or_r == "L" {
-            turn_left(dial, amount)
+            turn_left_caveman(dial, amount)
         }
         else {
-            turn_right(dial, amount)
+            turn_right_caveman(dial, amount)
         }
 
         fmt.printf("\tdial value: %v, passed 0: %v\n\n", dial.position, dial.touched_0)
@@ -49,12 +49,34 @@ turn_dial_from_instructions :: proc(dial: ^Dial, filepath: string) {
 	}
 }
 
+
+turn_left_caveman :: proc(dial: ^Dial, amount: int) {
+    for i in 0..<amount {
+        dial.position -= 1
+        if dial.position == 0 {
+            dial.touched_0 += 1
+        }
+        if dial.position == -1 {
+            dial.position = 99
+        }
+    }
+}
+
+turn_right_caveman :: proc(dial: ^Dial, amount: int) {
+    for i in 0..<amount {
+        dial.position += 1
+        if dial.position == 100 {
+            dial.position = 0
+        }
+        if dial.position == 0 {
+            dial.touched_0 += 1
+        }
+    }
+}
+
 turn_left :: proc(dial: ^Dial, amount: int) {
     old_pos := dial.position
     dial.position -= amount
-
-    // 50, c = 0
-    // L68 => 50 - 168 == -118 => 82, c = 2
 
     if amount < old_pos {
         return
@@ -63,7 +85,7 @@ turn_left :: proc(dial: ^Dial, amount: int) {
     complement := 100 - old_pos
     combined := complement + amount
 
-    dial.touched_0 += combined / 100
+    calc_zero(dial, old_pos, combined)
 
     dial.position %= 100
     if dial.position < 0 {
@@ -77,16 +99,21 @@ turn_right :: proc(dial: ^Dial, amount: int) {
 
     combined := old_pos + amount
 
-    dial.touched_0 += combined / 100
+    calc_zero(dial, old_pos, combined)
 
     dial.position %= 100
 }
 
+calc_zero :: proc(dial: ^Dial, old_pos: int, sum: int) {
+    dial.touched_0 += sum / 100
+    if old_pos == 0 {
+        dial.touched_0 -= 1
+    }
+}
+
 main :: proc() {
-    dial := Dial { STARTING_POINT, 0, 0, }
+    dial := Dial { STARTING_POINT, 0, 0 }
     turn_dial_from_instructions(&dial, "day1/input.txt")
     fmt.printf("RESTED AT 0: %v\n", dial.rested_at_0)
     fmt.printf("Touched 0: %v\n", dial.touched_0)
-
-    fmt.printf("integer divide %v\n", 10/3)
 }
