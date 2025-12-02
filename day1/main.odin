@@ -15,18 +15,18 @@ Dial :: struct {
 turn_dial_from_instructions :: proc(dial: ^Dial, filepath: string) {
     data, ok := os.read_entire_file(filepath, context.allocator)
 	if !ok {
-        fmt.print("I FAILED!!!!")
+        fmt.printf("file does not exist : %v\n", filepath)
 		return
 	}
 	defer delete(data, context.allocator)
     
 	it := string(data)
 	for line in strings.split_lines_iterator(&it) {
-		fmt.printf("line[0:1]: %v, value: %v\n", line[0:1], line[1:])
+		// fmt.printf("line[0:1]: %v, value: %v\n", line[0:1], line[1:])
         l_or_r := line[0:1]
         value, ok := strconv.parse_int(line[1:])
         if !ok {
-            fmt.print("I FAILED!!!!")
+            fmt.print("could not parse an int from line\n")
             return
         }
 
@@ -39,7 +39,7 @@ turn_dial_from_instructions :: proc(dial: ^Dial, filepath: string) {
             turn_right(dial, amount)
         }
 
-        fmt.printf("\tdial value: %v\n\n", dial.position)
+        // fmt.printf("\tdial value: %v\n\n", dial.position)
 
         if dial.position == 0 {
             dial.rested_at_0 += 1
