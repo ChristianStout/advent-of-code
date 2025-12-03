@@ -41,21 +41,38 @@ sum_of_invalid_ids :: proc(bottom: int, top: int, ) -> int {
     for id in bottom..=top {
         buf: [12]u8
         id_string := strconv.write_int(buf[:], cast(i64)id, 10)
-
-        if len(id_string) % 2 > 0 {
-            continue
-        }
-        
-        left_half := id_string[:len(id_string)/2]
-        right_half := id_string[len(id_string)/2:]
-
-        // fmt.printf("id: %v, left: %v, right: %v\n", id_string, left_half, right_half)
-        if strings.compare(left_half, right_half) == 0 {
-            sum += id
+        inner: for length in 1..=(len(id_string)-1) {
+            if repeats(id_string, length) {
+                sum += id
+                break inner
+            }
         }
     }
 
     return sum
+}
+
+repeats :: proc(id: string, length: int) -> bool {
+    if len(id) % length != 0 {
+        return false
+    }
+
+    prev := id[0:length]
+    p := fmt.aprintf("repeats - id: %v, length: %v, operation: [%v", id, length, prev)
+
+    for l := length; l < len(id); l += length {
+        curr := id[l:l+length]
+        if !(strings.compare(prev, curr) == 0) {
+            // fmt.printf("] returning false...\n\n")
+            return false
+        }
+        // p += fmt.aprintf(", %v", curr)
+        p = strings.concatenate({p, fmt.aprintf(", %v", curr)})
+        prev = curr
+    }
+
+    fmt.printf("%v]\n\n", p)
+    return true
 }
 
 main :: proc() {
