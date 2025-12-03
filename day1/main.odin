@@ -20,10 +20,13 @@ turn_dial_from_instructions :: proc(dial: ^Dial, filepath: string) {
 		return
 	}
 	defer delete(data, context.allocator)
+
+
+    // fmt.print(data)
     
 	it := string(data)
 	for line in strings.split_lines_iterator(&it) {
-		fmt.printf("line[0:1]: %v, value: %v\n", line[0:1], line[1:])
+		// fmt.printf("line[0:1]: %v, value: %v\n", line[0:1], line[1:])
         l_or_r := line[0:1]
         value, ok := strconv.parse_int(line[1:])
 
@@ -41,7 +44,7 @@ turn_dial_from_instructions :: proc(dial: ^Dial, filepath: string) {
             turn_right_caveman(dial, amount)
         }
 
-        fmt.printf("\tdial value: %v, passed 0: %v\n\n", dial.position, dial.touched_0)
+        // fmt.printf("\tdial value: %v, passed 0: %v\n\n", dial.position, dial.touched_0)
 
         if dial.position == 0 {
             dial.rested_at_0 += 1
