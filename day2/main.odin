@@ -58,7 +58,7 @@ repeats :: proc(id: string, length: int) -> bool {
     }
 
     prev := id[0:length]
-    p := fmt.aprintf("repeats - id: %v, length: %v, operation: [%v", id, length, prev)
+    // p := fmt.aprintf("repeats - id: %v, length: %v, operation: [%v", id, length, prev)
 
     for l := length; l < len(id); l += length {
         curr := id[l:l+length]
@@ -67,11 +67,11 @@ repeats :: proc(id: string, length: int) -> bool {
             return false
         }
         // p += fmt.aprintf(", %v", curr)
-        p = strings.concatenate({p, fmt.aprintf(", %v", curr)})
+        // p = strings.concatenate({p, fmt.aprintf(", %v", curr)})/
         prev = curr
     }
 
-    fmt.printf("%v]\n\n", p)
+    // fmt.printf("%v]\n\n", p)
     return true
 }
 
