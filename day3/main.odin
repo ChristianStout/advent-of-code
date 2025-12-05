@@ -29,16 +29,17 @@ find_max_joltage :: proc(line: string) -> int {
     for r in line {
         curr, ok := strconv.digit_to_int(r)
         if !ok {
+            fmt.print("THIS FAILED")
             return -1
         }
-        if curr > max_bank {
-            max_sum = curr
-            continue
-        }
 
-        curr_combined :=  max_bank * 10 + curr
+        fmt.printf("line: %v, max_sum: %v\n", line, max_sum)
+        curr_combined :=  (max_bank * 10) + curr
         if curr_combined > max_sum {
             max_sum = curr_combined
+        }
+        if curr > max_bank {
+            max_bank = curr
         }
     }
 
